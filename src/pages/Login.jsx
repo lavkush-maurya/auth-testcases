@@ -14,8 +14,26 @@ import { Link } from "react-router-dom";
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = () => {
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Password validation regex
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if (!emailRegex.test(email)) {
+      setError("Invalid email format");
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      setError(
+        "Password should have at least 8 characters with 1 capital letter and 1 number"
+      );
+      return;
+    }
     // Perform login logic here
     console.log("Email:", email);
     console.log("Password:", password);
@@ -23,6 +41,7 @@ function LoginPage() {
 
   return (
     <Box
+      className="LoginPage"
       display="flex"
       justifyContent="center"
       alignItems="center"
@@ -37,11 +56,17 @@ function LoginPage() {
         bg="teal.500"
       >
         <VStack spacing={4}>
-          <Heading size="lg">Login</Heading>
+          <Heading size="lg">Login Form</Heading>
+          {error && (
+            <Text color="red.500" data-testid="error">
+              {error}
+            </Text>
+          )}
           <FormControl id="email" isRequired>
             <FormLabel>Email address</FormLabel>
             <Input
               type="email"
+              data-testid="email"
               value={email}
               bg="teal.100"
               onChange={(e) => setEmail(e.target.value)}
@@ -51,12 +76,17 @@ function LoginPage() {
             <FormLabel>Password</FormLabel>
             <Input
               type="password"
+              data-testid="password"
               bg="teal.100"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </FormControl>
-          <Button colorScheme="blue" onClick={handleLogin}>
+          <Button
+            data-testid="loginBtn"
+            colorScheme="blue"
+            onClick={handleLogin}
+          >
             Login
           </Button>
           <Text color={"whiteAlpha.900"}>
